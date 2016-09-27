@@ -1,25 +1,15 @@
 #include <stdio.h>
-#include <string>
 #include <vector>
 using namespace std;
 
 #include "util.h"
 #include "base58.h"
+#include "verifymessage.h"
 
 bool fTestNet = false;
 const string strMessageMagic = "Bitcoin Signed Message:\n"; // from main.cpp
 
-int main(int argc, char *argv[]) {
-    if (argc != 4) {
-        fprintf(stderr,
-            "verifysig <bitcoinaddress> <signature> <message>\n\n"
-            "Verify a signed message\n");
-        return 255;
-    }
-
-    string strAddress  = argv[1];
-    string strSign     = argv[2];
-    string strMessage  = argv[3];
+bool verifymessage(string strAddress, string strSign, string strMessage) {
 
     CBitcoinAddress addr(strAddress);
     if (!addr.IsValid()) {

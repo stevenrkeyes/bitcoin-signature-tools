@@ -5,6 +5,8 @@
 #ifndef BITCOIN_UTIL_H
 #define BITCOIN_UTIL_H
 
+#include <string>
+#include <vector>
 #include <string.h>
 
 vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)

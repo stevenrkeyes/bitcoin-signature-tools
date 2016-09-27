@@ -1,13 +1,16 @@
 CFLAGS := -O2
 
-.default: verifymessage 
+#.default: verifymessage 
 
 # the g++ configurations are based on what bitcoin-qt uses
 
-all: verifymessage signmessage
+all: signmessage bitcrack #verifymessage
 
-verifymessage: verifymessage.o key.o
+bitcrack: bitcrack.o key.o verifymessage.o
 	g++ $(CFLAGS) -Wall -Wextra -Wformat -Wformat-security -fno-stack-protector -fstack-protector-all -Wstack-protector -D_FORTIFY_SOURCE=2 -Wl,--gc-sections -o $@ $^ -lcrypto
+
+#verifymessage: verifymessage.o key.o
+#	g++ $(CFLAGS) -Wall -Wextra -Wformat -Wformat-security -fno-stack-protector -fstack-protector-all -Wstack-protector -D_FORTIFY_SOURCE=2 -Wl,--gc-sections -o $@ $^ -lcrypto
 
 signmessage: signmessage.o key.o
 	g++ $(CFLAGS) -Wall -Wextra -Wformat -Wformat-security -fno-stack-protector -fstack-protector-all -Wstack-protector -D_FORTIFY_SOURCE=2 -Wl,--gc-sections -o $@ $^ -lcrypto
