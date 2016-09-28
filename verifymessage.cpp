@@ -43,10 +43,10 @@ bool verifymessage(string strAddress, string strSign, string strMessage) {
 
     // 0 is "success" in standard UNIX return codes
     if (key.GetPubKey().GetID() == keyID) {
-        printf("pass\n");
+        //printf("pass\n");
         return 0;
     } else {
-        printf("fail\n");
+        //printf("fail\n");
         return 1;
     }
 }
