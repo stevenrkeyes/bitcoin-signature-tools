@@ -14,7 +14,7 @@ const std::string plain_string = "hello";
 
 // test private key 5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ
 std::vector< std::vector <char > > possibility_array = {
-{'5', 'A', 'B', 'C'},
+{'A', 'B', 'C', '5'},
 {'H'},
 {'u'},
 {'e'},
@@ -67,16 +67,32 @@ std::vector< std::vector <char > > possibility_array = {
 {'J'}
 };
 
+bool checkKey(string possible_key) {
+    // a couple options:
+    // 1. sign a message with the possible key, and then see if it matches the given signed message
+    // 2. sign a message with the possible key, and then see if it verifies with the public key
+    // 3. just check if it's a valid base58 key
+    // 3 might be fastest, unsure, might also be wrong sometimes. But 1 is probably faster than 2.
+    string attempted_encoded_string = signmessage(possible_key, plain_string);
+    // note: actually, options 1+2 do option 3--if the key is invalid, then the signmessage function
+    // skips the signing process and just returns an empty string, which will not pass the following
+    // check
+    if (attempted_encoded_string == "") {
+        return false;
+    }
+    return verifymessage(public_address, attempted_encoded_string, plain_string);
+}
+
 int main(int argc, char *argv[]) {
         
-    fprintf(stdout, "Testing mixed-radix library; should print 1 day, 0 hours, 1 minute, 2 seconds:\n");
+    /*fprintf(stdout, "Testing mixed-radix library; should print 1 day, 0 hours, 1 minute, 2 seconds:\n");
     std::vector<int> foo = {365, 24, 60, 60}; // time mixed radix representation
     std::vector<int> baz = mixed_radix(86462, foo);
     fprintf(stdout, "%d days, ", baz[0]); // days, 1
     fprintf(stdout, "%d hours, ", baz[1]); // hours, 0
     fprintf(stdout, "%d minutes, ", baz[2]); // minutes, 1
     fprintf(stdout, "%d seconds", baz[3]); // seconds, 2
-    fprintf(stdout, "\n\n");
+    fprintf(stdout, "\n\n");*/
     
     long int num_possibilities = 1;
     for (int i = 0; i < (int)possibility_array.size(); i++) {
@@ -84,8 +100,6 @@ int main(int argc, char *argv[]) {
     }
     fprintf(stdout, "Number of possibilities to check: %ld", num_possibilities);
     fprintf(stdout, "\n\n");
-    
-    return verifymessage(public_address, encoded_string, plain_string);
     
     // build a array of the number of guesses for each character in the key
     std::vector<int> guess_lengths(possibility_array.size());
@@ -100,12 +114,14 @@ int main(int argc, char *argv[]) {
         for (int j = 0; j < (int)possibility_array.size(); j++) {
             int guess_index = indexes[j];
             possible_key += possibility_array[j][guess_index];
-            bool result = verifymessage(public_address, encoded_string, plain_string);
-            if (result == 0){
-                fprintf(stdout, "found");
-                return 0;
-            }
         }
+        fprintf(stdout, "%s", possible_key.c_str());
+        bool result = checkKey(possible_key);
+        if (result){
+            fprintf(stdout, " - key found\n");
+            return 0;
+        }
+        fprintf(stdout, " - incorrect guess\n");
     }
     
     return 0;

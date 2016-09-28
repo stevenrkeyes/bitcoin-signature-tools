@@ -13,13 +13,13 @@ bool verifymessage(string strAddress, string strSign, string strMessage) {
     CBitcoinAddress addr(strAddress);
     if (!addr.IsValid()) {
         fprintf(stderr, "Invalid address\n");
-        return 2;
+        return false;
     }
 
     CKeyID keyID;
     if (!addr.GetKeyID(keyID)) {
         fprintf(stderr, "Address does not refer to key\n");
-        return 3;
+        return false;
     }
 
     bool fInvalid = false;
@@ -27,7 +27,7 @@ bool verifymessage(string strAddress, string strSign, string strMessage) {
 
     if (fInvalid) {
         fprintf(stderr, "Malformed base64 encoding\n");
-        return 4;
+        return false;
     }
 
     CHashWriter ss(0);
@@ -37,16 +37,16 @@ bool verifymessage(string strAddress, string strSign, string strMessage) {
     CKey key;
     if (!key.SetCompactSignature(ss.GetHash(), vchSig)) {
         fprintf(stderr, "Error reading signature\n");
-        return 5;
+        return false;
     }
 
     // 0 is "success" in standard UNIX return codes
     if (key.GetPubKey().GetID() == keyID) {
         //printf("pass\n");
-        return 0;
+        return true;
     } else {
         //printf("fail\n");
-        return 1;
+        return false;
     }
 }
 

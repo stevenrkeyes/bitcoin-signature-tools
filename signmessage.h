@@ -19,7 +19,7 @@ string signmessage(string strSecret, string strMessage) {
     bool fGood = vchSecret.SetString(strSecret);
 
     if (!fGood) {
-        printf("Private key is not good\n");
+        //printf("Private key is not good\n");
         return "";
     }
 
