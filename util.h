@@ -5,6 +5,8 @@
 #ifndef BITCOIN_UTIL_H
 #define BITCOIN_UTIL_H
 
+using namespace std;
+
 #include <string>
 #include <vector>
 #include <string.h>

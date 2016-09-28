@@ -2,7 +2,11 @@
 #include <vector>
 
 #include "verifymessage.h"
+#include "signmessage.h"
 #include "bitcrack_util.h"
+
+bool fTestNet = false;
+const string strMessageMagic = "Bitcoin Signed Message:\n"; // from main.cpp
 
 const std::string public_address = "1GAehh7TsJAHuUAeKZcXf5CnwuGuGgyX2S";
 const std::string encoded_string = "HPA5v84Kr5CGBfv9meE1JSyUU1GuXD4g9mv6yPxupm9aSdW6efZkSMqLFwVuWr+2g2J4GyWURLot9rWoEDBnDk8=";
@@ -79,6 +83,30 @@ int main(int argc, char *argv[]) {
         num_possibilities *= (long)(possibility_array[i].size());
     }
     fprintf(stdout, "Number of possibilities to check: %ld", num_possibilities);
+    fprintf(stdout, "\n\n");
     
     return verifymessage(public_address, encoded_string, plain_string);
+    
+    // build a array of the number of guesses for each character in the key
+    std::vector<int> guess_lengths(possibility_array.size());
+    for (int i = 0; i < (int)possibility_array.size(); i++) {
+        guess_lengths[i] = possibility_array[i].size();
+    }
+    
+    std::string possible_key = "";
+    for (long int i = 0; i < num_possibilities; i++) {
+        std::vector<int> indexes = mixed_radix(i, guess_lengths);
+        possible_key = "";
+        for (int j = 0; j < (int)possibility_array.size(); j++) {
+            int guess_index = indexes[j];
+            possible_key += possibility_array[j][guess_index];
+            bool result = verifymessage(public_address, encoded_string, plain_string);
+            if (result == 0){
+                fprintf(stdout, "found");
+                return 0;
+            }
+        }
+    }
+    
+    return 0;
 }
