@@ -5,66 +5,68 @@
 #include "signmessage.h"
 #include "bitcrack_util.h"
 
+// note: takes about 4.3 microseconds per guess on my machine
+
 bool fTestNet = false;
 const string strMessageMagic = "Bitcoin Signed Message:\n"; // from main.cpp
 
-const std::string public_address = "1GAehh7TsJAHuUAeKZcXf5CnwuGuGgyX2S";
-const std::string encoded_string = "HPA5v84Kr5CGBfv9meE1JSyUU1GuXD4g9mv6yPxupm9aSdW6efZkSMqLFwVuWr+2g2J4GyWURLot9rWoEDBnDk8=";
-const std::string plain_string = "hello";
+const std::string public_address = "1qkCBiEjY4GAUFBcrsDXqyM6EPbZKTqCW";
+const std::string encoded_string = "HKfTaGxIyLKyKeibtg6dKHLaZtvSFuQa+wC66fV9wUbEzqmY6VmKGt77aslK1y5y9Br8VW2fo3i2PVQwkBXjRcQ=";
+const std::string plain_string = "mrdeath5493";
 
 // test private key 5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ
 std::vector< std::vector <char > > possibility_array = {
-{'A', 'B', 'C', '5'},
+{'5'}, //
+{'J'}, //Steve Jobs
+{'K'}, //Stephanie Kwolek
+{'A'}, //Archimedes
+{'B'}, //Nolan Bushnell
+{'V', 'L'}, //Leonardo da Vinci? Louis-Sebastien Lenormand?
+{'F'}, //?????????????????????????????????????????????????????????????????????
+{'W','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}, //??????????????????????????
+{'G'}, //Gutenberg
+{'F'}, //Pedro Flores?
+{'e', 'E'}, //fill in the blank "e" in e=mc^2, or 'E', (or as in Einstein)
+{'S'}, //Henry W Seeley
+{'S'}, //John Spilsbury
+{'3'}, //
+{'V', 'E', 'R', }, //Leonardo da Vinci? Egyptians? Romans????????????????????
+{'R'}, //Wilhelm Rontgen?
+{'Y'}, //person: Linus Yale, Jr
+{'H'}, //Christian Hulsmeyer
+{'S', 'W', 'U'}, //George Stephenson????????? what is this object???????????????????????
+{'E'}, //Gustave Eiffel
+{'N'}, //person: Alfred Nobel
+{'H', 'F'}, //Jackson Haines? Finns?
+{'X'}, //fill in the blank: x chromosome
+{'Y'}, //fill in the blank: y chromosome
+{'I', 'E'}, //Inuit? Eskimo? ???????????????????????????????????????????????????
+{'M', 'P', 'H'}, //Eadweard Muybridge
+{'G'}, //person: Galileo Galilei
+{'C', 'W'}, //Chester Carlson? Joseph Wilson?
+{'A', 'Y'}, //Alcuin of York
+{'K'},
+{'L'}, //Hon Lik
 {'H'},
-{'u'},
-{'e'},
-{'C'},
-{'G'},
-{'U'},
-{'8'},
-{'r'},
-{'M'},
-{'j'},
-{'x'},
-{'E'},
-{'X'},
-{'x'},
-{'i'},
-{'P'},
-{'u'},
-{'D'},
-{'5'},
-{'B'},
-{'D'},
-{'k'},
-{'u'},
-{'4'},
-{'M'},
-{'k'},
-{'F'},
-{'q'},
-{'e'},
-{'Z'},
-{'y'},
-{'d'},
-{'4'},
-{'d'},
-{'Z'},
-{'1'},
-{'j'},
-{'v'},
-{'h'},
-{'T'},
-{'V'},
-{'q'},
-{'v'},
-{'b'},
-{'T'},
-{'L'},
-{'v'},
-{'y'},
-{'T'},
-{'J'}
+{'E', 'B'}, //Thomas Edison? Alexander Graham Bell?
+{'J'}, //Whitcomb L Judson
+{'X'}, //fill in the blank: alphabet
+{'H', 'E', 'B', 'T', 'P'}, //Hitchings or Elion
+{'9'}, // euro introduction year
+{'B'}, //Louis Braille
+{'S', 'O'}, //John O'Sullivan?
+{'G', 'A'}, //Bill Gates? Paul Allen?
+{'K', '2'}, //
+{'N'}, //
+{'F'}, //Michael Faraday
+{'E'}, //Albert Einstein
+{'X'}, //
+{'C'}, //André Cassagnes
+{'Y', 'N'}, //Gunpei Yokoi or Nintendo
+{'X', '3'}, //
+{'E', '6'}, //Oleg?????????????????????????????????????????????????????????
+{'E'}, //Martin Eberhard
+{'E'} //Douglas Engelbart};
 };
 
 bool checkKey(string possible_key) {
@@ -98,8 +100,9 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < (int)possibility_array.size(); i++) {
         num_possibilities *= (long)(possibility_array[i].size());
     }
-    fprintf(stdout, "Number of possibilities to check: %ld", num_possibilities);
-    fprintf(stdout, "\n\n");
+    fprintf(stdout, "Number of possibilities to check: %ld\n", num_possibilities);
+    fprintf(stdout, "Estimated time: %d minutes\n", (int)(0.0000043 * num_possibilities / 60.0));
+    fprintf(stdout, "\n");
     
     // build a array of the number of guesses for each character in the key
     std::vector<int> guess_lengths(possibility_array.size());
@@ -115,13 +118,13 @@ int main(int argc, char *argv[]) {
             int guess_index = indexes[j];
             possible_key += possibility_array[j][guess_index];
         }
-        fprintf(stdout, "%s", possible_key.c_str());
+        //fprintf(stdout, "%s", possible_key.c_str());
         bool result = checkKey(possible_key);
         if (result){
             fprintf(stdout, " - key found\n");
             return 0;
         }
-        fprintf(stdout, " - incorrect guess\n");
+        //fprintf(stdout, " - incorrect guess\n");
     }
     
     return 0;
